@@ -41,14 +41,20 @@ export function UsersList(props) {
 
   const isEmptyUsers = !users || (users && users.length === 0);
 
+  const history = useHistory();
+
+  const goToUserPage = (id) => {
+    history.push(`/user/${id}`);
+  };
+
   if (isEmptyUsers) return null;
 
   return (
     <UsersContainers>
       {users.map((user, idx) => (
-        <UserWrapper key={idx}>
+        <UserWrapper key={idx} onClick={() => goToUserPage(user.id)}>
           <UserImage>
-            <img src={user.avatar} />
+            <img alt="user likeness" src={user.avatar} />
           </UserImage>
           <UserName>
             {user.first_name} {user.last_name}
