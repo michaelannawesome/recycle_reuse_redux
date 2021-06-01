@@ -1,15 +1,21 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { createSelector } from "reselect";
 import { makeSelectUsers } from "./selectors";
 import Axios from "axios";
+import { setUsers } from "./actions";
+import { UsersList } from "./usersList";
 
 const stateSelector = createSelector(makeSelectUsers, (users) => ({
   users,
 }));
 
+const actionDispatch = (dispatch) => ({
+  setUser: (users) => dispatch(setUsers(users)),
+});
 export function HomePage(props) {
   const { users } = useSelector(stateSelector);
+  const { setUser } = actionDispatch(useDispatch());
 
   const fetchUsers = async () => {
     const response = await Axios.get("https://reqres.in/api/users").catch(
@@ -17,6 +23,17 @@ export function HomePage(props) {
         console.log("Err: ", err);
       }
     );
+
+    setUser(response.data.data);
   };
-  return <div>Hello React</div>;
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  return (
+    <div>
+      <UsersList />
+    </div>
+  );
 }
